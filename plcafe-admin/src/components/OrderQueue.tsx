@@ -9,9 +9,9 @@ const MOCK_ORDERS = [
 
 export default function OrderQueue({ onSelect }: { onSelect: (id: string) => void }) {
   return (
-    <div className="w-[450px] bg-zinc-50 border-r border-zinc-200 overflow-y-auto h-[calc(100vh-6rem)]">
+    <div className="w-[450px] bg-brand-bg border-r border-brand-text/10 overflow-y-auto h-[calc(100vh-6rem)]">
       <div className="p-6">
-        <h2 className="text-3xl font-black mb-6 text-zinc-800">대기 목록 (4)</h2>
+        <h2 className="text-3xl font-black mb-6 text-brand-text">대기 목록 (4)</h2>
         <div className="space-y-4">
           {MOCK_ORDERS.map((order) => (
             <button
@@ -32,10 +32,10 @@ export default function OrderQueue({ onSelect }: { onSelect: (id: string) => voi
                 }`}>
                   {order.id}
                 </span>
-                <span className="text-zinc-400 font-bold">{order.time}</span>
+                <span className="text-brand-text/40 font-bold">{order.time}</span>
               </div>
-              <p className="text-4xl font-black text-zinc-900 mb-1">{order.nickname}</p>
-              <p className="text-2xl text-zinc-600 font-bold">{order.items}개 메뉴</p>
+              <p className="text-4xl font-black text-brand-text mb-1">{order.nickname}</p>
+              <p className="text-2xl text-brand-text/60 font-bold">{order.items}개 메뉴</p>
             </button>
           ))}
         </div>

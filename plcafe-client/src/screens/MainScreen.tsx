@@ -12,22 +12,22 @@ const MENU_ITEMS = [
 
 export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-brand-bg">
       <ScrollView className="px-6 py-4">
-        <Text className="text-4xl font-bold mb-8 text-black">PL-CAFE 주문</Text>
+        <Text className="text-4xl font-black mb-8 text-brand-text">PL-CAFE 주문</Text>
 
         {/* Fast Track Section */}
         <View className="mb-10">
-          <Text className="text-2xl font-semibold mb-4 text-orange-600">⚡ Fast Track (1분 픽업)</Text>
+          <Text className="text-2xl font-bold mb-4 text-brand-primary">⚡ Fast Track (1분 픽업)</Text>
           <View className="flex-row flex-wrap justify-between">
             {MENU_ITEMS.filter(item => item.fastTrack).map(item => (
               <TouchableOpacity
                 key={item.id}
-                className="bg-orange-100 p-8 rounded-3xl w-[48%] mb-4 border-2 border-orange-200"
+                className="bg-brand-primary/10 p-8 rounded-3xl w-[48%] mb-4 border-2 border-brand-primary/20"
                 onPress={() => onNavigate('cart')}
               >
-                <Text className="text-3xl font-bold text-center mb-2">{item.name}</Text>
-                <Text className="text-xl text-center text-gray-600">{item.price}원</Text>
+                <Text className="text-3xl font-black text-center mb-2 text-brand-text">{item.name}</Text>
+                <Text className="text-xl text-center text-brand-text/60">{item.price}원</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -35,15 +35,15 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
 
         {/* Regular Menu Section */}
         <View className="mb-10">
-          <Text className="text-2xl font-semibold mb-4">전체 메뉴</Text>
+          <Text className="text-2xl font-black mb-4 text-brand-text">전체 메뉴</Text>
           {MENU_ITEMS.map(item => (
             <TouchableOpacity
               key={item.id}
-              className="bg-gray-50 p-6 rounded-2xl mb-4 flex-row justify-between items-center border border-gray-100"
+              className="bg-white/50 p-6 rounded-2xl mb-4 flex-row justify-between items-center border border-brand-text/5"
               onPress={() => onNavigate('cart')}
             >
-              <Text className="text-2xl font-medium">{item.name}</Text>
-              <Text className="text-xl text-gray-500">{item.price}원</Text>
+              <Text className="text-2xl font-bold text-brand-text">{item.name}</Text>
+              <Text className="text-xl text-brand-text/40">{item.price}원</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -51,10 +51,10 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
 
       {/* Floating Cart Button */}
       <TouchableOpacity
-        className="absolute bottom-10 right-10 bg-black p-6 rounded-full shadow-xl"
+        className="absolute bottom-10 right-10 bg-brand-text p-6 rounded-full shadow-xl"
         onPress={() => onNavigate('cart')}
       >
-        <Text className="text-white text-2xl font-bold">장바구니 확인</Text>
+        <Text className="text-white text-2xl font-black">장바구니 확인</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
