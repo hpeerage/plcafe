@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Image } from 'react-native';
 import { db } from '../lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useBarometer } from '../hooks/useBarometer';
@@ -29,7 +29,15 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
   return (
     <SafeAreaView className="flex-1 bg-brand-bg">
       <ScrollView className="px-6 py-4">
-        <Text className="text-4xl font-black mb-8 text-brand-text">PL-CAFE 주문</Text>
+        <View className="flex-row justify-between items-center mb-8">
+          <View>
+            <Text className="text-4xl font-black text-brand-text">PL-CAFE</Text>
+            <Text className="text-xl font-bold text-brand-text/40">{currentFloor}에서 주문 중</Text>
+          </View>
+          <View className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center">
+            <Text className="text-4xl">🐻</Text>
+          </View>
+        </View>
 
         {/* Fast Track Section */}
         <View className="mb-10">
