@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-
 export const PaymentScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
+  const rechargePoints = (amount: number, bonus: number) => {
+    alert(`${amount.toLocaleString()}원 (+보너스 ${bonus.toLocaleString()}원) 충전이 완료되었습니다.`);
+  };
   return (
     <SafeAreaView className="flex-1 bg-brand-bg">
       <View className="px-6 py-6 flex-1">
@@ -28,18 +28,20 @@ export const PaymentScreen = ({ onNavigate }: { onNavigate: (screen: string) => 
 
           {/* Recharge Buttons */}
           <Text className="text-2xl font-black self-start mb-6 text-brand-text">포인트 충전</Text>
-          <View className="flex-row justify-between w-full mb-6">
+           <View className="flex-row justify-between w-full mb-6">
             <TouchableOpacity 
               className="bg-brand-primary/10 p-8 rounded-3xl flex-1 mr-2 border border-brand-primary/20"
-              onPress={() => alert('30,000원 충전 완료')}
+              onPress={() => rechargePoints(30000, 1500)}
             >
               <Text className="text-3xl font-black text-brand-primary text-center">3만 원</Text>
+              <Text className="text-lg text-brand-primary/60 text-center font-bold">+5% 보너스</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               className="bg-brand-primary p-8 rounded-3xl flex-1 ml-2"
-              onPress={() => alert('50,000원 충전 완료')}
+              onPress={() => rechargePoints(50000, 5000)}
             >
               <Text className="text-3xl font-black text-white text-center">5만 원</Text>
+              <Text className="text-lg text-white/60 text-center font-bold">+10% 보너스</Text>
             </TouchableOpacity>
           </View>
 

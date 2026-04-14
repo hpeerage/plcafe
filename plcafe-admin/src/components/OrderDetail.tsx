@@ -5,9 +5,17 @@ export default function OrderDetail() {
     <div className="flex-1 bg-brand-bg h-[calc(100vh-6rem)] overflow-y-auto">
       <div className="p-12 max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-12 border-b-4 border-brand-text/5 pb-8">
-          <div>
-            <p className="text-2xl font-bold text-brand-text/40 uppercase tracking-widest mb-2">Order #101</p>
-            <h2 className="text-7xl font-black text-brand-text">홍길동 님이 주문함</h2>
+          <div className="flex items-center gap-6">
+            <div className="bg-white p-4 rounded-3xl shadow-sm border border-brand-text/5">
+              <p className="text-xs font-bold text-center mb-1 text-brand-text/40">SCAN QR</p>
+              <div className="w-24 h-24 bg-brand-text/10 rounded-xl flex items-center justify-center text-4xl">
+                📷
+              </div>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-brand-text/40 uppercase tracking-widest mb-2">Order #101</p>
+              <h2 className="text-7xl font-black text-brand-text">홍길동 님이 주문함</h2>
+            </div>
           </div>
           <div className="bg-red-600 text-white px-8 py-4 rounded-3xl text-3xl font-black">
             신규 주문
