@@ -3,30 +3,36 @@ import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 export const PickupScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
-  const mockOrderId = "ORD-123456";
+  const orderId = "ORD-123456";
 
   return (
-    <SafeAreaView className="flex-1 bg-brand-primary">
-      <View className="flex-1 items-center justify-center px-10">
-        <Text className="text-white text-4xl font-black mb-10 text-center">주문이 완료되었습니다!</Text>
-        
-        <View className="bg-white/20 p-10 rounded-[60px] w-full items-center mb-10 border-4 border-white/30">
-          <Text className="text-white text-[120px] font-black leading-none mb-4">102</Text>
-          <Text className="text-white text-7xl font-black text-center mb-6">홍길동 님</Text>
-          <View className="bg-white p-4 rounded-3xl">
-            <QRCode value={mockOrderId} size={150} />
+    <SafeAreaView className="flex-1 bg-brand-bg">
+      <View className="px-6 py-6 flex-1 justify-center">
+        <View className="bg-white p-12 rounded-5xl border border-brand-primary/5 shadow-2xl shadow-brand-primary/10 items-center">
+          <View className="bg-brand-primary/5 px-6 py-3 rounded-2xl mb-8">
+            <Text className="text-xl font-black text-brand-primary uppercase tracking-[0.3em]">Ready for Pickup</Text>
           </View>
+          
+          <Text className="text-brand-primary/30 text-2xl font-bold mb-2 tracking-widest uppercase">Order Number</Text>
+          <Text className="text-[120px] font-black text-brand-primary leading-none mb-4 -tracking-widest">#101</Text>
+          <Text className="text-4xl font-black text-brand-primary mb-12">홍길동 <Text className="text-brand-primary/30">님</Text></Text>
+
+          <View className="bg-brand-primary p-6 rounded-4xl shadow-xl shadow-brand-primary/20 mb-10">
+            <View className="bg-white p-6 rounded-2xl">
+              <QRCode value={orderId} size={220} color="#3C2A21" />
+            </View>
+          </View>
+
+          <Text className="text-xl font-bold text-brand-primary/40 text-center leading-relaxed">
+            바리스타에게 위 QR 코드를{"\n"}보여주시면 음료를 드립니다.
+          </Text>
         </View>
 
-        <Text className="text-white/80 text-3xl font-bold text-center mb-20">
-          이 화면을 바리스타에게{"\n"}보여주세요
-        </Text>
-
         <TouchableOpacity 
-          className="bg-brand-bg p-8 rounded-[40px] w-full shadow-2xl"
+          className="mt-12 bg-white/50 p-8 rounded-4xl border border-brand-primary/10 active:scale-95 transition-all"
           onPress={() => onNavigate('main')}
         >
-          <Text className="text-brand-primary text-3xl font-black text-center">처음으로 돌아가기</Text>
+          <Text className="text-brand-primary text-2xl font-black text-center uppercase tracking-widest">메인으로 돌아가기</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

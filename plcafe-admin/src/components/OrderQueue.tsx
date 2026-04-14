@@ -9,37 +9,48 @@ const MOCK_ORDERS = [
 
 export default function OrderQueue({ onSelect }: { onSelect: (id: string) => void }) {
   return (
-    <div className="w-[450px] bg-brand-bg border-r border-brand-text/10 overflow-y-auto h-[calc(100vh-6rem)]">
-      <div className="p-6">
-        <h2 className="text-3xl font-black mb-6 text-brand-text">대기 목록 (4)</h2>
-        <div className="space-y-4">
-          {MOCK_ORDERS.map((order) => (
-            <button
-              key={order.id}
-              onClick={() => onSelect(order.id)}
-              className={`w-full text-left p-6 rounded-2xl border-2 transition-all transform active:scale-95 ${
-                order.status === 'new' 
-                  ? 'bg-red-50 border-red-200 hover:bg-red-100' 
-                  : order.status === 'making'
-                  ? 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100'
-                  : 'bg-green-50 border-green-200 hover:bg-green-100'
-              }`}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <span className={`text-xl font-bold px-3 py-1 rounded-lg uppercase ${
-                  order.status === 'new' ? 'bg-red-600 text-white' : 
-                  order.status === 'making' ? 'bg-yellow-600 text-white' : 'bg-green-600 text-white'
-                }`}>
-                  {order.id}
-                </span>
-                <span className="text-brand-text/40 font-bold">{order.time}</span>
-              </div>
-              <p className="text-4xl font-black text-brand-text mb-1">{order.nickname}</p>
-              <p className="text-2xl text-brand-text/60 font-bold">{order.items}개 메뉴</p>
-            </button>
-          ))}
-        </div>
+    <aside className="w-[450px] bg-brand-bg/50 border-r border-brand-primary/10 overflow-y-auto px-6 py-8 h-[calc(100vh-6rem)]">
+      <div className="flex justify-between items-center mb-10 px-2">
+        <h2 className="text-3xl font-black text-brand-primary">대기 목록 <span className="text-brand-primary/20">({MOCK_ORDERS.length})</span></h2>
       </div>
-    </div>
+      
+      <div className="flex flex-col gap-6">
+        {MOCK_ORDERS.map((order) => (
+          <div 
+            key={order.id} 
+            onClick={() => onSelect(order.id)}
+            className={`p-8 rounded-4xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 ${
+              order.status === 'making' 
+                ? 'bg-brand-primary border-brand-primary text-white shadow-xl shadow-brand-primary/20' 
+                : 'bg-white border-brand-primary/5 hover:border-brand-primary/10'
+            }`}
+          >
+            <div className="flex justify-between items-start mb-6">
+              <span className={`px-4 py-2 rounded-2xl text-lg font-black ${
+                order.status === 'making' ? 'bg-white text-brand-primary' : 'bg-brand-primary/10 text-brand-primary'
+              }`}>
+                #{order.id}
+              </span>
+              <span className={`text-sm font-bold uppercase tracking-widest ${
+                order.status === 'making' ? 'text-white/60' : 'text-brand-primary/40'
+              }`}>
+                {order.time}
+              </span>
+            </div>
+            
+            <h3 className={`text-4xl font-black mb-2 ${
+              order.status === 'making' ? 'text-white' : 'text-brand-primary'
+            }`}>
+              {order.nickname}
+            </h3>
+            <p className={`text-xl font-bold ${
+              order.status === 'making' ? 'text-white/80' : 'text-brand-primary/40'
+            }`}>
+              {order.items}개 메뉴
+            </p>
+          </div>
+        ))}
+      </div>
+    </aside>
   );
 }

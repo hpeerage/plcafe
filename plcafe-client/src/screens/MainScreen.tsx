@@ -24,61 +24,76 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
     return unsub;
   }, []);
 
-  const filteredMenu = isPeakMode ? MENU_ITEMS.filter(item => !item.complex) : MENU_ITEMS;
-
   return (
     <SafeAreaView className="flex-1 bg-brand-bg">
-      <ScrollView className="px-6 py-4">
-        <View className="flex-row justify-between items-center mb-8">
+      <View className="px-6 py-6 flex-1">
+        {/* Header with Mascot */}
+        <View className="flex-row justify-between items-center mb-8 px-2">
           <View>
-            <Text className="text-4xl font-black text-brand-text">PL-CAFE</Text>
-            <Text className="text-xl font-bold text-brand-text/40">{currentFloor}에서 주문 중</Text>
+            <Text className="text-4xl font-black text-brand-primary tracking-tighter">PL-CAFE</Text>
+            <Text className="text-sm font-bold text-brand-primary/40 uppercase tracking-widest">{floor}에서 주문 중</Text>
           </View>
-          <View className="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center">
-            <Text className="text-4xl">🐻</Text>
-          </View>
-        </View>
-
-        {/* Fast Track Section */}
-        <View className="mb-10">
-          <Text className="text-2xl font-bold mb-4 text-brand-primary">⚡ Fast Track (1분 픽업)</Text>
-          <View className="flex-row flex-wrap justify-between">
-            {filteredMenu.filter(item => item.fastTrack).map(item => (
-              <TouchableOpacity
-                key={item.id}
-                className="bg-brand-primary/10 p-8 rounded-3xl w-[48%] mb-4 border-2 border-brand-primary/20"
-                onPress={() => onNavigate('cart')}
-              >
-                <Text className="text-3xl font-black text-center mb-2 text-brand-text">{item.name}</Text>
-                <Text className="text-xl text-center text-brand-text/60">{item.price}원</Text>
-              </TouchableOpacity>
-            ))}
+          <View className="bg-white p-3 rounded-2xl shadow-sm border border-brand-primary/5">
+            <Text className="text-3xl">🐻</Text>
           </View>
         </View>
 
-        {/* Regular Menu Section */}
-        <View className="mb-10">
-          <Text className="text-2xl font-black mb-4 text-brand-text">전체 메뉴 {isPeakMode && '(Peak Mode 활성)'}</Text>
-          {filteredMenu.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              className="bg-white/50 p-6 rounded-2xl mb-4 flex-row justify-between items-center border border-brand-text/5"
-              onPress={() => onNavigate('cart')}
-            >
-              <Text className="text-2xl font-bold text-brand-text">{item.name}</Text>
-              <Text className="text-xl text-brand-text/40">{item.price}원</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+        {/* Bento Grid Layout */}
+        <View className="flex-1">
+          {/* Fast Track Section */}
+          <View className="mb-8">
+            <View className="flex-row items-center mb-4 px-2">
+              <Text className="text-brand-accent mr-2">⚡</Text>
+              <Text className="text-xl font-black text-brand-primary uppercase tracking-tight">Fast Track <Text className="text-brand-primary/40 font-bold">(1분 픽업)</Text></Text>
+            </View>
+            <View className="flex-row gap-4">
+              {menuItems.filter(item => item.fast).map((item) => (
+                <TouchableOpacity 
+                  key={item.name} 
+                  className="flex-1 bg-white p-8 rounded-4xl shadow-xl shadow-brand-primary/5 border border-brand-primary/5 active:scale-95 transition-all"
+                  onPress={() => addToCart(item)}
+                >
+                  <Text className="text-2xl font-black text-brand-primary mb-2">{item.name}</Text>
+                  <Text className="text-lg font-bold text-brand-primary/40">{item.price.toLocaleString()}원</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
 
-      {/* Floating Cart Button */}
-      <TouchableOpacity
-        className="absolute bottom-10 right-10 bg-brand-text p-6 rounded-full shadow-xl"
-        onPress={() => onNavigate('cart')}
-      >
-        <Text className="text-white text-2xl font-black">장바구니 확인</Text>
-      </TouchableOpacity>
+          {/* Full Menu Grid */}
+          <Text className="text-xl font-black text-brand-primary mb-4 px-2 uppercase tracking-widest">전체 메뉴</Text>
+          <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
+            <View className="flex-row flex-wrap justify-between gap-y-4">
+              {menuItems.filter(item => !isPeakMode || item.fast).map((item) => (
+                <TouchableOpacity 
+                  key={item.name} 
+                  className="w-[48%] bg-white p-6 rounded-4xl border border-brand-primary/5 shadow-sm active:scale-95 transition-all"
+                  onPress={() => addToCart(item)}
+                >
+                  <View className="flex-row justify-between items-start mb-4">
+                    <Text className="text-xl font-black text-brand-primary flex-1 mr-2">{item.name}</Text>
+                    {item.fast && <Text className="text-xs">⚡</Text>}
+                  </View>
+                  <Text className="text-base font-bold text-brand-primary/40">{item.price.toLocaleString()}원</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* Floating Cart Button */}
+        {cart.length > 0 && (
+          <TouchableOpacity 
+            className="absolute bottom-10 right-6 left-6 bg-brand-primary p-8 rounded-4xl shadow-2xl shadow-brand-primary/30 flex-row justify-between items-center"
+            onPress={() => onNavigate('cart')}
+          >
+            <Text className="text-white text-2xl font-black">장바구니 확인</Text>
+            <View className="bg-brand-accent px-4 py-2 rounded-xl">
+              <Text className="text-white font-black text-xl">{cart.length}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
     </SafeAreaView>
   );
 };
