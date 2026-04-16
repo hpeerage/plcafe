@@ -1,6 +1,6 @@
 'use client';
 
-export default function OrderDetail() {
+export default function OrderDetail({ orderId }: { orderId: string | null }) {
   return (
     <div className="flex-1 bg-brand-bg/30 h-[calc(100vh-6rem)] overflow-y-auto">
       <div className="p-16 max-w-5xl mx-auto">
