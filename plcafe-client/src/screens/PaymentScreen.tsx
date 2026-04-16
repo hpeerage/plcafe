@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 export const PaymentScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
   const rechargePoints = (amount: number, bonus: number) => {

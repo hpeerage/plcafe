@@ -1,28 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Image } from 'react-native';
 import { db } from '../lib/firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection } from 'firebase/firestore';
 import { useBarometer } from '../hooks/useBarometer';
 
-const MENU_ITEMS = [
-  { id: '1', name: '아메리카노', price: 2200, fastTrack: true, complex: false },
-  { id: '2', name: '플-라떼', price: 3500, fastTrack: true, complex: false },
-  { id: '3', name: '자몽 에이드', price: 3200, fastTrack: false, complex: true },
-  { id: '4', name: '딸기 스무디', price: 4500, fastTrack: false, complex: true },
-];
+interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  fastTrack: boolean;
+  complex: boolean;
+  status: 'available' | 'soldout' | 'hidden';
+}
 
 export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
   const [isPeakMode, setIsPeakMode] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [cart, setCart] = useState<any[]>([]);
   const { currentFloor } = useBarometer();
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, 'settings', 'global'), (doc) => {
+    // 1. 피크 모드 설정 리스너
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'global'), (doc) => {
       if (doc.exists()) {
         setIsPeakMode(doc.data().peakMode || false);
       }
     });
-    return unsub;
+
+    // 2. 메뉴 리스트 리스너 (available한 메뉴만)
+    const unsubMenus = onSnapshot(collection(db, 'menus'), (snapshot) => {
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() } as MenuItem))
+        .filter(m => m.status === 'available');
+      
+      if (data.length > 0) {
+        setMenuItems(data);
+      } else {
+        // 데이터가 없을 경우 기본 메뉴로 폴백 (테스트/초기 구동용)
+        setMenuItems([
+          { id: '1', name: '아메리카노', price: 2200, fastTrack: true, complex: false, status: 'available' },
+          { id: '2', name: '플-라떼', price: 3500, fastTrack: true, complex: false, status: 'available' },
+          { id: '3', name: '자몽 에이드', price: 3200, fastTrack: false, complex: true, status: 'available' },
+          { id: '4', name: '딸기 스무디', price: 4500, fastTrack: false, complex: true, status: 'available' },
+        ]);
+      }
+    });
+
+    return () => {
+      unsubSettings();
+      unsubMenus();
+    };
   }, []);
+
+  const addToCart = (item: MenuItem) => {
+    setCart([...cart, item]);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-brand-bg">
@@ -31,7 +63,7 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
         <View className="flex-row justify-between items-center mb-8 px-2">
           <View>
             <Text className="text-4xl font-black text-brand-primary tracking-tighter">PL-CAFE</Text>
-            <Text className="text-sm font-bold text-brand-primary/40 uppercase tracking-widest">{floor}에서 주문 중</Text>
+            <Text className="text-sm font-bold text-brand-primary/40 uppercase tracking-widest">{currentFloor}에서 주문 중</Text>
           </View>
           <View className="bg-white p-3 rounded-2xl shadow-sm border border-brand-primary/5">
             <Text className="text-3xl">🐻</Text>
@@ -47,9 +79,9 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
               <Text className="text-xl font-black text-brand-primary uppercase tracking-tight">Fast Track <Text className="text-brand-primary/40 font-bold">(1분 픽업)</Text></Text>
             </View>
             <View className="flex-row gap-4">
-              {menuItems.filter(item => item.fast).map((item) => (
+              {menuItems.filter(item => item.fastTrack).map((item) => (
                 <TouchableOpacity 
-                  key={item.name} 
+                  key={item.id} 
                   className="flex-1 bg-white p-8 rounded-4xl shadow-xl shadow-brand-primary/5 border border-brand-primary/5 active:scale-95 transition-all"
                   onPress={() => addToCart(item)}
                 >
@@ -61,18 +93,18 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
           </View>
 
           {/* Full Menu Grid */}
-          <Text className="text-xl font-black text-brand-primary mb-4 px-2 uppercase tracking-widest">전체 메뉴</Text>
+          <Text className="text-xl font-black text-brand-primary mb-4 px-2 uppercase tracking-widest">전체 메뉴 {isPeakMode && '(PEAK)'}</Text>
           <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
             <View className="flex-row flex-wrap justify-between gap-y-4">
-              {menuItems.filter(item => !isPeakMode || item.fast).map((item) => (
+              {menuItems.filter(item => !isPeakMode || !item.complex).map((item) => (
                 <TouchableOpacity 
-                  key={item.name} 
+                  key={item.id} 
                   className="w-[48%] bg-white p-6 rounded-4xl border border-brand-primary/5 shadow-sm active:scale-95 transition-all"
                   onPress={() => addToCart(item)}
                 >
                   <View className="flex-row justify-between items-start mb-4">
                     <Text className="text-xl font-black text-brand-primary flex-1 mr-2">{item.name}</Text>
-                    {item.fast && <Text className="text-xs">⚡</Text>}
+                    {item.fastTrack && <Text className="text-xs">⚡</Text>}
                   </View>
                   <Text className="text-base font-bold text-brand-primary/40">{item.price.toLocaleString()}원</Text>
                 </TouchableOpacity>

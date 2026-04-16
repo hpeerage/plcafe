@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
-export default function ControlBar() {
+export default function ControlBar({ 
+  activeTab, 
+  setActiveTab 
+}: { 
+  activeTab: 'orders' | 'menus'; 
+  setActiveTab: (tab: 'orders' | 'menus') => void; 
+}) {
   const [isPeakMode, setIsPeakMode] = useState(false);
 
   useEffect(() => {
@@ -27,15 +33,28 @@ export default function ControlBar() {
     <div className="h-28 bg-brand-bg text-brand-primary flex items-center justify-between px-12 border-b border-brand-primary/10 sticky top-0 z-50">
       <div className="flex items-center gap-10">
         <h1 className="text-4xl font-black tracking-tighter text-brand-primary">PL-CAFE <span className="text-brand-accent">ADMIN</span></h1>
+        
+        <div className="flex bg-brand-primary/5 p-1.5 rounded-3xl border border-brand-primary/10">
+          <button 
+            onClick={() => setActiveTab('orders')}
+            className={`px-8 py-3 rounded-2xl text-lg font-black transition-all ${activeTab === 'orders' ? 'bg-brand-primary text-white shadow-md' : 'text-brand-primary/40 hover:text-brand-primary'}`}
+          >
+            ORDER
+          </button>
+          <button 
+            onClick={() => setActiveTab('menus')}
+            className={`px-8 py-3 rounded-2xl text-lg font-black transition-all ${activeTab === 'menus' ? 'bg-brand-primary text-white shadow-md' : 'text-brand-primary/40 hover:text-brand-primary'}`}
+          >
+            MENU
+          </button>
+        </div>
+
         <div className="flex gap-4">
           <button 
             onClick={togglePeakMode}
-            className={`${isPeakMode ? 'bg-red-600' : 'bg-brand-primary'} hover:opacity-90 px-10 py-4 rounded-4xl text-xl font-bold transition-all text-white shadow-lg active:scale-95`}
+            className={`${isPeakMode ? 'bg-red-600' : 'bg-brand-primary'} hover:opacity-90 px-8 py-3 rounded-3xl text-sm font-black transition-all text-white shadow-lg active:scale-95`}
           >
-            {isPeakMode ? '⚡ PEAK MODE ON' : '⚡ PEAK MODE OFF'}
-          </button>
-          <button className="bg-brand-primary/5 hover:bg-brand-primary/10 px-10 py-4 rounded-4xl text-xl font-bold transition-all text-brand-primary border border-brand-primary/20">
-            전체 완료 (Batch)
+            {isPeakMode ? '⚡ PEAK ON' : '⚡ PEAK OFF'}
           </button>
         </div>
       </div>
