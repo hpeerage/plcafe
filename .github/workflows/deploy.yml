@@ -43,8 +43,7 @@ jobs:
 
       - name: Prepare Deployment 📂
         run:           mkdir -p deploy
-                  cp -r plcafe-client/dist/* deploy/
-                            mkdir -p deploy/admin
+                  cp -r plcafe-client/dist/* deploy/                            mkdir -p deploy/admin
                                       cp -r plcafe-admin/out/* deploy/admin/
                                                 touch deploy/.nojekyll
                                                     - name: Deploy to GitHub Pages
