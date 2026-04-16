@@ -42,10 +42,28 @@ jobs:
         run: npx expo export --platform web
 
       - name: Prepare Deployment 📂
-        run: |
-          mkdir -p deploy
+        run:           mkdir -p deploy
+                  cp -r plcafe-client/dist/* deploy/
+                            mkdir -p deploy/admin
+                                      cp -r plcafe-admin/out/* deploy/admin/
+                                                touch deploy/.nojekyll
+
+                                                      - name: Deploy to GitHub Pages
+                                                              uses: JamesIves/github-pages-deploy-action@v4
+                                                                      with:
+                                                                                folder: deploy
+                                                                                          branch: gh-pages
+          mkdir -p deplo          cp -r plcafe-client/dist/* deploy
+                    mkdir -p deploy/admin
+                              cp -r plcafe-admin/out/* deploy/admin/
+                                        touch deploy/.nojekyll
+
+                                              - name: Deploy to GitHub Pages
+                                                      uses: JamesIves/github-pages-deploy-action@v4
+                                                              with:
+                                                                        folder: deploy
+                                                                                  branch: gh-pages
           cp index.html deploy/
-          cp -r plcafe-admin/out deploy/admin
           cp -r plcafe-client/dist deploy/client
 
       - name: Deploy to GitHub Pages 🚀
