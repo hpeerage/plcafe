@@ -47,8 +47,7 @@ jobs:
                             mkdir -p deploy/admin
                                       cp -r plcafe-admin/out/* deploy/admin/
                                                 touch deploy/.nojekyll
-
-                                                      - name: Deploy to GitHub Pages
+                                                    - name: Deploy to GitHub Pages
                                                               uses: JamesIves/github-pages-deploy-action@v4
                                                                       with:
                                                                                 folder: deploy
