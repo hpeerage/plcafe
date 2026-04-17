@@ -3,7 +3,7 @@
     "name": "plcafe-client",
     "slug": "plcafe-client",
     "experiments": {
-      "baseUrl": ""
+      "baseUrl": "/plcafe/client"
     },
     "version": "1.0.0",
     "orientation": "portrait",

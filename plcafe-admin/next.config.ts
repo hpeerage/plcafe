@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export',
-  assetPrefix: './',
+  assetPrefix: '/plcafe/admin',
+  basePath: '/plcafe/admin',
   trailingSlash: true,
   images: {
     unoptimized: true,
