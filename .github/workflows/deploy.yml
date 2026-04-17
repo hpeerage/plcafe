@@ -25,37 +25,49 @@ jobs:
             plcafe-admin/package-lock.json
             plcafe-client/package-lock.json
 
-      - name: Install & Build Admin 🏗️
+      - name: Install Admin Dependencies 📦
+        working-directory: ./plcafe-admin
+        run: npm install --legacy-peer-deps
+
+      - name: Build Admin App 🏗️
         working-directory: ./plcafe-admin
         env:
           CI: false
-        run: |
-          npm install --legacy-peer-deps
-          npm run build
+        run: npm run build
 
-      - name: Install & Build Client 🏗️
+      - name: Install Client Dependencies 📦
+        working-directory: ./plcafe-client
+        run: npm install --legacy-peer-deps
+
+      - name: Build Client App 🏗️
         working-directory: ./plcafe-client
         env:
           CI: false
-        run: |
-          npm install --legacy-peer-deps
-          npx expo export --platform web
+        run: npx expo export --platform web
 
-      - name: Prepare Deployment 📂
+      - name: Prepare Deployment Root 📁
         run: |
           mkdir -p deploy/client
           mkdir -p deploy/admin
-          
-          # 1. Root files
           [ -f .nojekyll ] && cp .nojekyll deploy/ || touch deploy/.nojekyll
-          [ -f index.html ] && cp index.html deploy/
+          [ -f index.html ] && cp index.html deploy/ || echo "Root index.html missing"
+
+      - name: Copy App Assets 🚚
+        run: |
+          if [ -d plcafe-client/dist ]; then
+            cp -rf plcafe-client/dist/* deploy/client/
+          else
+            echo "::warning::Client dist not found"
+          fi
           
-          # 2. Copy Build Results
-          [ -d plcafe-client/dist ] && cp -rf plcafe-client/dist/* deploy/client/ || echo "Client dist missing"
-          [ -d plcafe-admin/out ] && cp -rf plcafe-admin/out/* deploy/admin/ || echo "Admin out missing"
-          
-          # 3. Simple list
-          ls -R deploy
+          if [ -d plcafe-admin/out ]; then
+            cp -rf plcafe-admin/out/* deploy/admin/
+          else
+            echo "::warning::Admin out not found"
+          fi
+
+      - name: Verify Final Structure 🔍
+        run: ls -R deploy
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
