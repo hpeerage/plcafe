@@ -1,5 +1,5 @@
 {
-  "name": "plcafe-client",  "homepage": "/plcafe/client/",
+  "name": "plcafe-client",  "homepage": ".",
   
   "version": "0.1.0",
   "main": "index.ts",
