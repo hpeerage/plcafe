@@ -39,20 +39,23 @@ jobs:
 
       - name: Prepare Deployment 📂
         run: |
-          mkdir deploy
+          mkdir -p deploy/client
+          mkdir -p deploy/admin
+          
           # 1. Root landing page (Redirect to client)
           cp index.html deploy/
           
           # 2. Client App (/client/)
-          mkdir -p deploy/client
           cp -r plcafe-client/dist/* deploy/client/
           
           # 3. Admin Dashboard (/admin/)
-          mkdir -p deploy/admin
           cp -r plcafe-admin/out/* deploy/admin/
           
           # 4. Git SEO hint
           touch deploy/.nojekyll
+          
+          # 5. Verify Structure for Debugging
+          ls -R deploy
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
