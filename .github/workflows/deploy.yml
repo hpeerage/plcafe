@@ -55,6 +55,12 @@ jobs:
           # 4. Final Structure Verification
           echo "### DEPLOY DIRECTORY STRUCTURE ###"
           ls -R deploy
+          
+          echo "### CHECKING CLIENT INDEX.HTML PATHS ###"
+          cat deploy/client/index.html | head -n 50
+          
+          echo "### CHECKING ADMIN INDEX.HTML PATHS ###"
+          cat deploy/admin/index.html | head -n 50
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
