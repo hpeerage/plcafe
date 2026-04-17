@@ -28,13 +28,13 @@ jobs:
       - name: Install & Build Admin 🏗️
         working-directory: ./plcafe-admin
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Install & Build Client 🏗️
         working-directory: ./plcafe-client
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npx expo export --platform web
 
       - name: Prepare Deployment 📂
