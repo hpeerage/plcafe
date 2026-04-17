@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { useStore } from '../store/useStore';
 import { db } from '../lib/firebase';
@@ -32,7 +32,7 @@ export const PickupScreen = ({ onNavigate }: { onNavigate: (screen: string) => v
               className="w-full h-full"
               resizeMode="cover"
             />
-          </div>
+          </View>
           <Text className="text-5xl font-black text-white text-center mb-6 leading-tight">수령이{"\n"}완료되었습니다!</Text>
           <Text className="text-xl font-bold text-white/60 text-center mb-20 leading-relaxed">
             플-카페를 이용해 주셔서 감사합니다.{"\n"}맛있게 드세요!
