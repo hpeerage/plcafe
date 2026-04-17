@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node ⚙️
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: 'npm'
           cache-dependency-path: |
             plcafe-admin/package-lock.json
@@ -27,12 +27,16 @@ jobs:
 
       - name: Install & Build Admin 🏗️
         working-directory: ./plcafe-admin
+        env:
+          CI: false
         run: |
           npm install --legacy-peer-deps
           npm run build
 
       - name: Install & Build Client 🏗️
         working-directory: ./plcafe-client
+        env:
+          CI: false
         run: |
           npm install --legacy-peer-deps
           npx expo export --platform web
@@ -42,33 +46,16 @@ jobs:
           mkdir -p deploy/client
           mkdir -p deploy/admin
           
-          # 1. Root files (.nojekyll, index.html)
+          # 1. Root files
           [ -f .nojekyll ] && cp .nojekyll deploy/ || touch deploy/.nojekyll
-          [ -f index.html ] && cp index.html deploy/ || echo "index.html missing"
+          [ -f index.html ] && cp index.html deploy/
           
-          # 2. Client App (/client/)
-          if [ -d plcafe-client/dist ]; then
-            cp -rf plcafe-client/dist/* deploy/client/
-          else
-            echo "plcafe-client/dist not found"
-          fi
+          # 2. Copy Build Results
+          [ -d plcafe-client/dist ] && cp -rf plcafe-client/dist/* deploy/client/ || echo "Client dist missing"
+          [ -d plcafe-admin/out ] && cp -rf plcafe-admin/out/* deploy/admin/ || echo "Admin out missing"
           
-          # 3. Admin Dashboard (/admin/)
-          if [ -d plcafe-admin/out ]; then
-            cp -rf plcafe-admin/out/* deploy/admin/
-          else
-            echo "plcafe-admin/out not found"
-          fi
-          
-          # 4. Final Structure Verification
-          echo "### DEPLOY DIRECTORY STRUCTURE ###"
+          # 3. Simple list
           ls -R deploy
-          
-          echo "### CHECKING CLIENT INDEX.HTML PATHS ###"
-          [ -f deploy/client/index.html ] && (cat deploy/client/index.html | head -n 50) || echo "client index.html missing"
-          
-          echo "### CHECKING ADMIN INDEX.HTML PATHS ###"
-          [ -f deploy/admin/index.html ] && (cat deploy/admin/index.html | head -n 50) || echo "admin index.html missing"
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
