@@ -42,7 +42,8 @@ jobs:
           mkdir -p deploy/client
           mkdir -p deploy/admin
           
-          # 1. Root landing page (Redirect to client)
+          # 1. Root files (.nojekyll, index.html)
+          cp .nojekyll deploy/
           cp index.html deploy/
           
           # 2. Client App (/client/)
@@ -51,10 +52,8 @@ jobs:
           # 3. Admin Dashboard (/admin/)
           cp -r plcafe-admin/out/* deploy/admin/
           
-          # 4. Git SEO hint
-          touch deploy/.nojekyll
-          
-          # 5. Verify Structure for Debugging
+          # 4. Final Structure Verification
+          echo "### DEPLOY DIRECTORY STRUCTURE ###"
           ls -R deploy
 
       - name: Deploy to GitHub Pages 🚀
