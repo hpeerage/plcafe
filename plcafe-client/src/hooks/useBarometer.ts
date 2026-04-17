@@ -3,14 +3,14 @@ import { Barometer } from 'expo-sensors';
 
 const FLOOR_HEIGHT = 3; // 3m per floor
 const BASE_ALTITUDE_MAP: Record<number, string> = {
-  [-4]: 'B4',
-  [-3]: 'B3',
-  [-2]: 'B2',
-  [-1]: 'B1',
+  [-4]: 'B4F',
+  [-3]: 'B3F',
+  [-2]: 'B2F',
+  [-1]: 'B1F',
   [0]: '1F',
   [1]: '2F',
   [2]: '3F',
-  [3]: '4F', // User mentioned 3F as +9m, but actually 1F(0m), 2F(3m), 3F(6m), 4F(9m)
+  [3]: '3F', // 9m 지점을 3F로 매핑 (사용자 요청 기준)
 };
 
 export const useBarometer = () => {

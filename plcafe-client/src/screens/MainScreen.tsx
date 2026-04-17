@@ -3,6 +3,15 @@ import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Image } from 'r
 import { db } from '../lib/firebase';
 import { doc, onSnapshot, collection } from 'firebase/firestore';
 import { useBarometer } from '../hooks/useBarometer';
+import { useStore } from '../store/useStore';
+
+// 마스코트 메시지 버블 컴포넌트
+const MascotBubble = ({ message }: { message: string }) => (
+  <View className="absolute -left-48 top-0 bg-white px-5 py-3 rounded-2xl rounded-tr-none shadow-md border border-brand-primary/5">
+    <Text className="text-brand-primary font-bold text-sm">{message}</Text>
+    <View className="absolute -right-2 top-0 w-4 h-4 bg-white border-r border-t border-brand-primary/5 transform rotate-45" />
+  </View>
+);
 
 interface MenuItem {
   id: string;
@@ -16,8 +25,25 @@ interface MenuItem {
 export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
   const [isPeakMode, setIsPeakMode] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [cart, setCart] = useState<any[]>([]);
-  const { currentFloor } = useBarometer();
+  const { cart, addToCart, currentFloor, setFloor, activeOrderId } = useStore();
+  const { currentFloor: baroFloor } = useBarometer();
+  const [mascotMsg, setMascotMsg] = useState('오늘도 환영합니다! ☕');
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      setMascotMsg('맛있는 음료가 담겼네요!');
+    } else if (activeOrderId) {
+      setMascotMsg('정성껏 준비하고 있어요!');
+    } else {
+      setMascotMsg('오늘도 환영합니다! ☕');
+    }
+  }, [cart.length, activeOrderId]);
+
+  useEffect(() => {
+    if (baroFloor) {
+      setFloor(baroFloor);
+    }
+  }, [baroFloor]);
 
   useEffect(() => {
     // 1. 피크 모드 설정 리스너
@@ -36,7 +62,7 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
       if (data.length > 0) {
         setMenuItems(data);
       } else {
-        // 데이터가 없을 경우 기본 메뉴로 폴백 (테스트/초기 구동용)
+        // 데이터가 없을 경우 기본 메뉴 (테스트용)
         setMenuItems([
           { id: '1', name: '아메리카노', price: 2200, fastTrack: true, complex: false, status: 'available' },
           { id: '2', name: '플-라떼', price: 3500, fastTrack: true, complex: false, status: 'available' },
@@ -52,22 +78,29 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
     };
   }, []);
 
-  const addToCart = (item: MenuItem) => {
-    setCart([...cart, item]);
-  };
-
   return (
     <SafeAreaView className="flex-1 bg-brand-bg">
       <View className="px-6 py-6 flex-1">
-        {/* Header with Mascot */}
+        {/* Header */}
         <View className="flex-row justify-between items-center mb-8 px-2">
           <View>
             <Text className="text-4xl font-black text-brand-primary tracking-tighter">PL-CAFE</Text>
             <Text className="text-sm font-bold text-brand-primary/40 uppercase tracking-widest">{currentFloor}에서 주문 중</Text>
           </View>
-          <View className="bg-white p-3 rounded-2xl shadow-sm border border-brand-primary/5">
-            <Text className="text-3xl">🐻</Text>
-          </View>
+          <TouchableOpacity 
+            className="bg-white p-1 rounded-full shadow-sm border-2 border-brand-primary/10 items-center justify-center relative"
+            onPress={() => onNavigate('point')}
+          >
+            <MascotBubble message={mascotMsg} />
+            <View className="absolute -top-1 -right-1 bg-brand-accent px-2 py-1 rounded-lg z-10 shadow-sm">
+              <Text className="text-white text-[10px] font-black uppercase">Point</Text>
+            </View>
+            <Image 
+              source={require('../../assets/mascot.jpg')} 
+              className="w-16 h-16 rounded-full"
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Bento Grid Layout */}
@@ -121,7 +154,7 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
           >
             <Text className="text-white text-2xl font-black">장바구니 확인</Text>
             <View className="bg-brand-accent px-4 py-2 rounded-xl">
-              <Text className="text-white font-black text-xl">{cart.length}</Text>
+              <Text className="text-white font-black text-xl">{cart.reduce((sum, item) => sum + item.qty, 0)}</Text>
             </View>
           </TouchableOpacity>
         )}

@@ -1,15 +1,35 @@
 import { db } from './firebase';
-import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { doc, runTransaction, serverTimestamp, collection, getDoc } from 'firebase/firestore';
 
 export const checkQuotaAndPlaceOrder = async (orderData: any) => {
+  // 1. 전역 설정 가져오기
+  const settingsRef = doc(db, 'settings', 'global');
+  const settingsSnap = await getDoc(settingsRef);
+  
+  const settings = settingsSnap.exists() ? settingsSnap.data() : {
+    slotMinutes: 10,
+    maxQuota: 15,
+    peakMaxQuota: 10,
+    peakMode: false
+  };
+
+  const slotMinutes = settings.slotMinutes || 10;
+  const isPeak = settings.peakMode || false;
+  const currentMaxQuota = isPeak ? (settings.peakMaxQuota || 10) : (settings.maxQuota || 15);
+
+  // 2. KST 기준 슬롯 아이디 생성
   const now = new Date();
-  const slotMinutes = Math.floor(now.getMinutes() / 10) * 10;
-  const slotId = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(slotMinutes).padStart(2, '0')}`;
+  const kstOffset = 9 * 60 * 60 * 1000;
+  const kstDate = new Date(now.getTime() + kstOffset);
+  
+  const slotIndex = Math.floor(kstDate.getUTCMinutes() / slotMinutes) * slotMinutes;
+  const slotId = `${kstDate.getUTCFullYear()}${String(kstDate.getUTCMonth() + 1).padStart(2, '0')}${String(kstDate.getUTCDate()).padStart(2, '0')}${String(kstDate.getUTCHours()).padStart(2, '0')}${String(slotIndex).padStart(2, '0')}`;
   
   const slotRef = doc(db, 'slots', slotId);
+  const orderRef = doc(collection(db, 'orders'));
   
   try {
-    await runTransaction(db, async (transaction) => {
+    const result = await runTransaction(db, async (transaction) => {
       const slotDoc = await transaction.get(slotRef);
       let count = 0;
       
@@ -17,8 +37,7 @@ export const checkQuotaAndPlaceOrder = async (orderData: any) => {
         count = slotDoc.data().count;
       }
       
-      const MAX_QUOTA = 15;
-      if (count >= MAX_QUOTA) {
+      if (count >= currentMaxQuota) {
         throw new Error('QUOTA_EXCEEDED');
       }
       
@@ -29,15 +48,18 @@ export const checkQuotaAndPlaceOrder = async (orderData: any) => {
       }, { merge: true });
       
       // Place Order
-      const orderRef = doc(collection(db, 'orders'));
       transaction.set(orderRef, {
         ...orderData,
         slotId,
-        timestamp: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
         status: 'new'
       });
+
+      return orderRef.id;
     });
-    return { success: true };
+    
+    return { success: true, orderId: result };
   } catch (error: any) {
     console.error('Order fail:', error);
     return { success: false, error: error.message };

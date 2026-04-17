@@ -17,14 +17,15 @@ export const triggerOrderNotification = async (nickname: string, currentFloor: s
 
 export const calculateEstimatedArrivalTime = (floor: string, pendingCount: number) => {
   const floorMap: Record<string, number> = {
-    'B4': -4, 'B3': -3, 'B2': -2, 'B1': -1, '1F': 0, '2F': 1, '3F': 2, '4F': 3
+    'B4F': -4, 'B3F': -3, 'B2F': -2, 'B1F': -1, '1F': 0, '2F': 1, '3F': 2
   };
   
-  const currentFloorIndex = floorMap[floor] || 0;
-  const distance = Math.abs(currentFloorIndex); // Distance to 1F (Cafe)
+  const targetFloorIndex = 1; // 2F is the target
+  const currentFloorIndex = floorMap[floor] ?? 0;
+  const distance = Math.abs(currentFloorIndex - targetFloorIndex); // Distance to 2F (Cafe)
   
-  const baseTimePerFloor = 0.5; // 0.5 min per floor (assuming cafe is on 1F)
-  const trafficMultiplier = 1 + (pendingCount / 5); // 0.2 min additional per pending order
+  const baseTimePerFloor = 0.5; // 0.5 min per floor
+  const trafficMultiplier = 1 + (pendingCount / 5); 
   
   return distance * baseTimePerFloor * trafficMultiplier;
 };
