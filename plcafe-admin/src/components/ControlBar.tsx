@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 export default function ControlBar({ 
   activeTab, 
@@ -52,9 +52,9 @@ export default function ControlBar({
 
   const togglePeakMode = async () => {
     try {
-      await updateDoc(doc(db, 'settings', 'global'), {
+      await setDoc(doc(db, 'settings', 'global'), {
         peakMode: !isPeakMode
-      });
+      }, { merge: true });
     } catch (error) {
       console.error('Failed to toggle peak mode:', error);
     }
@@ -110,7 +110,7 @@ export default function ControlBar({
           </p>
         </div>
         <div className="w-16 h-16 bg-brand-primary rounded-full overflow-hidden flex items-center justify-center shadow-md border-2 border-brand-primary/10">
-          <img src="/mascot.jpg" alt="Mascot" className="w-full h-full object-cover" />
+          <img src="mascot.jpg" alt="Mascot" className="w-full h-full object-cover" />
         </div>
       </div>
     </div>

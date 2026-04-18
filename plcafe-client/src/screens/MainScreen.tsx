@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Image } from 'react-native';
 import { db } from '../lib/firebase';
 import { doc, onSnapshot, collection } from 'firebase/firestore';
+import mascotImg from '../../assets/mascot.jpg';
 import { useBarometer } from '../hooks/useBarometer';
 import { useStore } from '../store/useStore';
 
@@ -96,7 +97,7 @@ export const MainScreen = ({ onNavigate }: { onNavigate: (screen: string) => voi
               <Text className="text-white text-[10px] font-black uppercase">Point</Text>
             </View>
             <Image 
-              source={require('../../assets/mascot.jpg')} 
+              source={mascotImg} 
               className="w-16 h-16 rounded-full"
               resizeMode="cover"
             />
