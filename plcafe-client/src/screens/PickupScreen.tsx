@@ -4,6 +4,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { useStore } from '../store/useStore';
 import { db } from '../lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
+import mascotImg from '../../assets/mascot.jpg';
 
 export const PickupScreen = ({ onNavigate }: { onNavigate: (screen: string) => void }) => {
   const { activeOrderId, nickname, setActiveOrderId } = useStore();
@@ -28,7 +29,7 @@ export const PickupScreen = ({ onNavigate }: { onNavigate: (screen: string) => v
         <View className="px-10 items-center">
           <View className="w-48 h-48 mb-12 rounded-full overflow-hidden border-8 border-white/20 shadow-2xl">
             <Image 
-              source={require('../../assets/mascot.jpg')} 
+              source={mascotImg} 
               className="w-full h-full"
               resizeMode="cover"
             />
