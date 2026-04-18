@@ -162,7 +162,7 @@ export default function SettingsView() {
                 isSaving ? 'bg-zinc-300' : 'bg-brand-primary shadow-brand-primary/30 hover:opacity-90'
               }`}
             >
-              {isProcessing ? '저장 중...' : '설정 저장하기'}
+              {isSaving ? '저장 중...' : '설정 저장하기'}
             </button>
           </div>
         </div>
